@@ -1,0 +1,34 @@
+# Binaries
+/bin/
+/dist/
+/build/
+/out/
+/tmp/
+
+# Go
+*.exe
+*.test
+*.out
+coverage.out
+vendor/
+
+# Modules
+go.sum
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+**/.env
+.env.local
