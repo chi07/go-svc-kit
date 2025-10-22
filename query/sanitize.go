@@ -1,7 +1,7 @@
 package query
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -36,28 +36,73 @@ func SanitizeCols(allowed map[string]struct{}, cols []string) []string {
 	return out
 }
 
-func ParseSort(sort string, allowed map[string]struct{}, def string) []string {
-	if sort == "" {
-		return []string{def}
+type SortField struct {
+	Field string
+	Desc  bool
+}
+
+func ParseBool(raw string) bool {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case "1", "t", "true", "yes", "y":
+		return true
+	default:
+		return false
 	}
-	parts := strings.Split(sort, ",")
+}
+
+func ParseInt(raw string, def int) int {
+	if raw == "" {
+		return def
+	}
+	i, err := strconv.Atoi(strings.TrimSpace(raw))
+	if err != nil || i < 0 {
+		return def
+	}
+	return i
+}
+
+func ParseCSV(raw string) []string {
+	if raw == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
 	out := make([]string, 0, len(parts))
 	for _, p := range parts {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
-		}
-		dir, col := "ASC", p
-		if strings.HasPrefix(p, "-") {
-			dir = "DESC"
-			col = p[1:]
-		}
-		if _, ok := allowed[col]; ok {
-			out = append(out, fmt.Sprintf("%s %s", col, dir))
+		if s := strings.TrimSpace(p); s != "" {
+			out = append(out, s)
 		}
 	}
 	if len(out) == 0 {
-		out = []string{def}
+		return nil
 	}
+	return out
+}
+
+func ParseSort(raw string) []SortField {
+	if strings.TrimSpace(raw) == "" {
+		return nil
+	}
+	items := strings.Split(raw, ",")
+	out := make([]SortField, 0, len(items))
+	for _, it := range items {
+		it = strings.TrimSpace(it)
+		if it == "" {
+			continue
+		}
+		field := it
+		desc := false
+		if i := strings.IndexByte(it, ':'); i >= 0 {
+			field = strings.TrimSpace(it[:i])
+			dir := strings.ToLower(strings.TrimSpace(it[i+1:]))
+			desc = dir == "desc" || dir == "descending" || dir == "d"
+		}
+		if field != "" {
+			out = append(out, SortField{Field: field, Desc: desc})
+		}
+	}
+	if len(out) == 0 {
+		return nil
+	}
+
 	return out
 }
