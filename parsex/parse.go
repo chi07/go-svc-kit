@@ -1,6 +1,7 @@
 package parsex
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -39,4 +40,30 @@ func Bool(s string) bool {
 	default:
 		return false
 	}
+}
+
+func ParseSort(sort string, allowed map[string]struct{}, def string) []string {
+	if sort == "" {
+		return []string{def}
+	}
+	parts := strings.Split(sort, ",")
+	out := make([]string, 0, len(parts))
+	for _, p := range parts {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+		dir, col := "ASC", p
+		if strings.HasPrefix(p, "-") {
+			dir = "DESC"
+			col = p[1:]
+		}
+		if _, ok := allowed[col]; ok {
+			out = append(out, fmt.Sprintf("%s %s", col, dir))
+		}
+	}
+	if len(out) == 0 {
+		out = []string{def}
+	}
+	return out
 }
