@@ -1,4 +1,4 @@
-// pkg/mw/recover.go
+// pkg/mwx/recover.go
 
 package mw
 
@@ -22,7 +22,7 @@ func Recover(log zerolog.Logger) fiber.Handler {
 					Str("ip", c.IP()).
 					Bytes("stack", debug.Stack()).
 					Msg("panic_recovered")
-				_ = c.Status(500).JSON(fiber.Map{"error": fiber.Map{"message": "internal server error", "requestId": reqID}})
+				_ = c.Status(500).JSON(fiber.Map{"error": fiber.Map{"message": "internal serverx error", "requestId": reqID}})
 			}
 		}()
 		return c.Next()

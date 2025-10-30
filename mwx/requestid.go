@@ -1,4 +1,4 @@
-// pkg/mw/requestid.go
+// pkg/mwx/requestid.go
 
 package mw
 

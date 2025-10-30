@@ -1,4 +1,4 @@
-// pkg/mw/corsgzip.go
+// pkg/mwx/corsgzip.go
 package mw
 
 import (

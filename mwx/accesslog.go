@@ -1,4 +1,4 @@
-// pkg/mw/accesslog.go
+// pkg/mwx/accesslog.go
 
 package mw
 

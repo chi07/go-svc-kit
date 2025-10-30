@@ -72,7 +72,7 @@ func NewBaseResty(log zerolog.Logger, debug bool, timeout time.Duration) *resty.
 				Str("method", r.Method).
 				Str("url", r.URL).
 				Interface("headers", redactHeaders(r.Header)).
-				Interface("query", r.QueryParam).
+				Interface("queryx", r.QueryParam).
 				Str("request_id", RequestIDFromContext(r.Context())).
 				Msg("resty_before")
 		}
@@ -108,7 +108,7 @@ func NewBaseResty(log zerolog.Logger, debug bool, timeout time.Duration) *resty.
 				Dur("dns", ti.DNSLookup).
 				Dur("tcp", ti.TCPConnTime).
 				Dur("tls", ti.TLSHandshake).
-				Dur("server", ti.ServerTime).
+				Dur("serverx", ti.ServerTime).
 				Dur("conn_idle", ti.ConnIdleTime).
 				Bool("conn_reused", ti.IsConnReused).
 				Bool("conn_was_idle", ti.IsConnWasIdle),
