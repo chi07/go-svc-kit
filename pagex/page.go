@@ -9,7 +9,7 @@ import (
 const (
 	DefaultLimit int64 = 10
 	MinLimit     int64 = 1
-	MaxLimit     int64 = 200 // bạn có thể chỉnh tuỳ dịch vụ
+	MaxLimit     int64 = 200
 )
 
 func clampNonNeg(x int64) int64 {
