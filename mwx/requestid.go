@@ -1,6 +1,4 @@
-// pkg/mwx/requestid.go
-
-package mw
+package mwx
 
 import (
 	"github.com/gofiber/fiber/v2"

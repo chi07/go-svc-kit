@@ -1,5 +1,4 @@
-// pkg/mwx/corsgzip.go
-package mw
+package mwx
 
 import (
 	"strings"

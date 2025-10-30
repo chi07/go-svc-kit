@@ -1,6 +1,4 @@
-// pkg/mwx/recover.go
-
-package mw
+package mwx
 
 import (
 	"runtime/debug"

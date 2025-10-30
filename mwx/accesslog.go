@@ -1,6 +1,4 @@
-// pkg/mwx/accesslog.go
-
-package mw
+package mwx
 
 import (
 	"time"
