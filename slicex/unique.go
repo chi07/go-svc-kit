@@ -18,3 +18,12 @@ func UniqueStrings(xs []string) []string {
 	}
 	return out
 }
+
+func ContainsStr(ss []string, want string) bool {
+	for _, s := range ss {
+		if s == want {
+			return true
+		}
+	}
+	return false
+}
