@@ -11,6 +11,11 @@ import (
 
 type ExecFunc func(r *resty.Request) (*resty.Response, error)
 
+const (
+	msgUnmarshalBody = "restyx: unmarshal body: %w"
+	msgPathNotFound  = "restyx: path %v not found or invalid"
+)
+
 func ExecuteAndMapByFieldAt(
 	req *resty.Request,
 	exec ExecFunc,
@@ -28,14 +33,14 @@ func ExecuteAndMapByFieldAt(
 	if !statusAllowed(resp.StatusCode(), expectedStatus) {
 		return nil, newHTTPError(resp)
 	}
-	// decode 1 lần → interface{}
+
 	var root any
 	if err := json.Unmarshal(resp.Body(), &root); err != nil {
-		return nil, fmt.Errorf("restyx: unmarshal body: %w", err)
+		return nil, fmt.Errorf(msgUnmarshalBody, err)
 	}
 	node, ok := findAt(root, at)
 	if !ok {
-		return nil, fmt.Errorf("restyx: path %v not found or invalid", at)
+		return nil, fmt.Errorf(msgPathNotFound, at)
 	}
 	arr, ok := node.([]any)
 	if !ok {
@@ -46,14 +51,12 @@ func ExecuteAndMapByFieldAt(
 	for _, el := range arr {
 		obj, ok := el.(map[string]any)
 		if !ok {
-			// skip phần tử không phải object
 			continue
 		}
 		k, ok := obj[keyField]
 		if !ok {
 			continue
 		}
-		// khoá nên là string; nếu không, stringify an toàn.
 		key, ok := k.(string)
 		if !ok {
 			key = fmt.Sprint(k)
@@ -63,8 +66,6 @@ func ExecuteAndMapByFieldAt(
 	return out, nil
 }
 
-// ExecuteAndMapByKeyAt tương tự ExecuteAndMapByFieldAt nhưng cho phép
-// biến đổi mỗi object sang kiểu T, trả về map[string]T.
 func ExecuteAndMapByKeyAt[T any](
 	req *resty.Request,
 	exec ExecFunc,
@@ -85,11 +86,11 @@ func ExecuteAndMapByKeyAt[T any](
 	}
 	var root any
 	if err := json.Unmarshal(resp.Body(), &root); err != nil {
-		return nil, fmt.Errorf("restyx: unmarshal body: %w", err)
+		return nil, fmt.Errorf(msgUnmarshalBody, err)
 	}
 	node, ok := findAt(root, at)
 	if !ok {
-		return nil, fmt.Errorf("restyx: path %v not found or invalid", at)
+		return nil, fmt.Errorf(msgPathNotFound, at)
 	}
 	arr, ok := node.([]any)
 	if !ok {
@@ -112,7 +113,6 @@ func ExecuteAndMapByKeyAt[T any](
 		}
 		v, err := valueFn(obj)
 		if err != nil {
-			// skip phần tử lỗi (best-effort)
 			continue
 		}
 		out[key] = v
@@ -136,11 +136,11 @@ func ExecuteAndDecodeAt[T any](
 	}
 	var root any
 	if err := json.Unmarshal(resp.Body(), &root); err != nil {
-		return zero, fmt.Errorf("restyx: unmarshal body: %w", err)
+		return zero, fmt.Errorf(msgUnmarshalBody, err)
 	}
 	node, ok := findAt(root, at)
 	if !ok {
-		return zero, fmt.Errorf("restyx: path %v not found or invalid", at)
+		return zero, fmt.Errorf(msgPathNotFound, at)
 	}
 
 	b, err := json.Marshal(node)

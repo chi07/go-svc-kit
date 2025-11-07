@@ -56,3 +56,19 @@ func BoolFrom(s string, def bool) bool {
 		return def
 	}
 }
+
+func BoolOrNil(s string) *bool {
+	s = strings.ToLower(strings.TrimSpace(s))
+	if s == "" {
+		return nil
+	}
+	switch s {
+	case "1", "t", "true", "yes", "y":
+		b := true
+		return &b
+	case "0", "f", "false", "no", "n":
+		b := false
+		return &b
+	}
+	return nil
+}
