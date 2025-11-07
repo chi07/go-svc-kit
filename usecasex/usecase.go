@@ -8,11 +8,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// FetchManyFn: signature cho client batch (ids -> map[id]=>payload)
-
 type FetchManyFn func(ctx context.Context, ids []string) (map[string]any, error)
-
-// EnrichBatch chạy song song nhiều nguồn (tối đa 2-3) với per-call timeout kế thừa ctx
 
 func EnrichBatch(ctx context.Context, timeout time.Duration, log zerolog.Logger, tasks map[string]func(context.Context) error) {
 	eg := new(errgroup.Group)
