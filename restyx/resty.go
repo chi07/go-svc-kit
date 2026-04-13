@@ -134,6 +134,7 @@ func ExecuteAndDecodeAt[T any](
 	if !statusAllowed(resp.StatusCode(), expectedStatus) {
 		return zero, newHTTPError(resp)
 	}
+
 	var root any
 	if err := json.Unmarshal(resp.Body(), &root); err != nil {
 		return zero, fmt.Errorf(msgUnmarshalBody, err)
@@ -143,11 +144,11 @@ func ExecuteAndDecodeAt[T any](
 		return zero, fmt.Errorf(msgPathNotFound, at)
 	}
 
-	b, err := json.Marshal(node)
+	raw, err := json.Marshal(node)
 	if err != nil {
 		return zero, fmt.Errorf("restyx: marshal node: %w", err)
 	}
-	if err := json.Unmarshal(b, &zero); err != nil {
+	if err := json.Unmarshal(raw, &zero); err != nil {
 		return zero, fmt.Errorf("restyx: decode node to type: %w", err)
 	}
 	return zero, nil

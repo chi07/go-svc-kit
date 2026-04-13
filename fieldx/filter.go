@@ -60,6 +60,12 @@ func FilterAllowedFieldsWithAlias(selected []string, alias map[string]string, al
 	if len(selected) == 0 {
 		return allDefault
 	}
+
+	// For small inputs, use linear search to avoid map allocation
+	if len(selected) <= 3 {
+		return filterAllowedFieldsWithAliasSmall(selected, alias, allowedAliasSet)
+	}
+
 	out := make([]string, 0, len(selected))
 	seen := make(map[string]struct{}, len(selected))
 	for _, f := range selected {
@@ -70,6 +76,29 @@ func FilterAllowedFieldsWithAlias(selected []string, alias map[string]string, al
 		col := alias[key]
 		if _, dup := seen[col]; !dup {
 			seen[col] = struct{}{}
+			out = append(out, col)
+		}
+	}
+	return out
+}
+
+func filterAllowedFieldsWithAliasSmall(selected []string, alias map[string]string, allowedAliasSet map[string]struct{}) []string {
+	out := make([]string, 0, len(selected))
+	for _, f := range selected {
+		key := strings.TrimSpace(strings.ToLower(f))
+		if _, ok := allowedAliasSet[key]; !ok {
+			continue
+		}
+		col := alias[key]
+		// Linear search for duplicates
+		found := false
+		for _, existing := range out {
+			if existing == col {
+				found = true
+				break
+			}
+		}
+		if !found {
 			out = append(out, col)
 		}
 	}

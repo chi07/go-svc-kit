@@ -169,6 +169,19 @@ func SlicePage[T any](rows []T, offset, limit int64) []T {
 	return slices.Clone(rows[offset:end])
 }
 
+func SlicePageView[T any](rows []T, offset, limit int64) []T {
+	offset = clampNonNeg(offset)
+	limit = ClampLimit(limit)
+	if offset >= int64(len(rows)) {
+		return nil
+	}
+	end := offset + limit
+	if end > int64(len(rows)) {
+		end = int64(len(rows))
+	}
+	return rows[offset:end]
+}
+
 func (p PageInfo) ToPaginator() *responsex.Paginator {
 	return &responsex.Paginator{
 		Limit:       p.Limit,

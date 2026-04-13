@@ -2,6 +2,7 @@ package dbx
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net"
 	"net/url"
@@ -58,9 +59,9 @@ func OptionsFromDSN(dsn string, poolSize int, sslInsecure bool) (*pg.Options, er
 		Database:     db,
 		PoolSize:     poolSize,
 		IdleTimeout:  5 * time.Minute,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		DialTimeout:  30 * time.Second,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		DialTimeout:  3 * time.Second,
 		MaxConnAge:   30 * time.Minute,
 		MinIdleConns: 2,
 		TLSConfig:    tlsConf,
@@ -72,15 +73,26 @@ func splitHostPort(h string) (string, string, error) {
 	if err == nil {
 		return host, port, nil
 	}
-	if strings.Contains(err.Error(), "missing port in address") {
+	if isMissingPortError(err) {
 		return h, "5432", nil
 	}
 	return "", "", err
 }
 
+func isMissingPortError(err error) bool {
+	var addrErr *net.AddrError
+	if errors.As(err, &addrErr) {
+		return addrErr.Err == "missing port in address"
+	}
+	return strings.Contains(err.Error(), "missing port in address")
+}
+
 func ApplySetMap(q *pg.Query, fields map[string]any) *pg.Query {
+	if len(fields) == 0 {
+		return q
+	}
 	for k, v := range fields {
-		q = q.Set(fmt.Sprintf("%s = ?", k), v)
+		q.Set(k+" = ?", v)
 	}
 	return q
 }

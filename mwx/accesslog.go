@@ -12,11 +12,12 @@ func AccessLogger(log zerolog.Logger) fiber.Handler {
 		start := time.Now()
 		err := c.Next()
 
+		statusCode := c.Response().StatusCode()
 		reqID, _ := c.Locals("request_id").(string)
 		evt := log.Info()
-		if c.Response().StatusCode() >= 500 {
+		if statusCode >= 500 {
 			evt = log.Error()
-		} else if c.Response().StatusCode() >= 400 {
+		} else if statusCode >= 400 {
 			evt = log.Warn()
 		}
 
@@ -25,9 +26,9 @@ func AccessLogger(log zerolog.Logger) fiber.Handler {
 			Str("request_id", reqID).
 			Str("method", c.Method()).
 			Str("path", c.OriginalURL()).
-			Int("status", c.Response().StatusCode()).
+			Int("status", statusCode).
 			Dur("latency", time.Since(start)).
-			Int("resp_bytes", len(c.Response().Body())).
+			Int("resp_bytes", c.Response().Header.ContentLength()).
 			Str("ip", c.IP()).
 			Str("user_agent", string(c.Request().Header.UserAgent())).
 			Err(err).

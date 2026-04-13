@@ -121,7 +121,15 @@ func NewBaseResty(log zerolog.Logger, debug bool, timeout time.Duration) *resty.
 	return c
 }
 
-var sensitive = []string{"authorization", "x-api-key", "api-key", "x-auth-token", "proxy-authorization", "set-cookie", "cookie"}
+var sensitiveHeaders = map[string]struct{}{
+	"authorization":       {},
+	"x-api-key":           {},
+	"api-key":             {},
+	"x-auth-token":        {},
+	"proxy-authorization": {},
+	"set-cookie":          {},
+	"cookie":              {},
+}
 
 func redactHeaders(h http.Header) map[string]string {
 	if len(h) == 0 {
@@ -129,16 +137,9 @@ func redactHeaders(h http.Header) map[string]string {
 	}
 	out := make(map[string]string, len(h))
 	for k, vals := range h {
-		lk := strings.ToLower(k)
-		red := false
-		for _, s := range sensitive {
-			if lk == s {
-				out[k] = "***REDACTED***"
-				red = true
-				break
-			}
-		}
-		if !red {
+		if _, ok := sensitiveHeaders[strings.ToLower(k)]; ok {
+			out[k] = "***REDACTED***"
+		} else {
 			out[k] = strings.Join(vals, ",")
 		}
 	}

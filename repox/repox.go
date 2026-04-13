@@ -29,11 +29,14 @@ func MapFieldToDB(alias string, aliasMap map[string]string) (string, bool) {
 }
 
 func AllowedAliasSetLower(aliasMap map[string]string) map[string]struct{} {
-	keys := make([]string, 0, len(aliasMap))
-	for k := range aliasMap {
-		keys = append(keys, k)
+	if len(aliasMap) == 0 {
+		return nil
 	}
-	return fieldx.MakeSetLower(keys)
+	set := make(map[string]struct{}, len(aliasMap))
+	for k := range aliasMap {
+		set[strings.ToLower(k)] = struct{}{}
+	}
+	return set
 }
 
 func SafeColumns(requested []string, aliasMap map[string]string) []string {
