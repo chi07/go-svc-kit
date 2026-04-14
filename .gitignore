@@ -11,6 +11,7 @@
 *.out
 coverage.out
 vendor/
+.qwen/
 
 # Modules
 go.sum
