@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 
 	"github.com/chi07/go-svc-kit/mwx"
@@ -24,14 +24,14 @@ func TestRecover_PanickingHandler_Returns500AndLogs(t *testing.T) {
 	var buf bytes.Buffer
 	app := newAppWithRecover(&buf)
 
-	app.Get("/panic", func(c *fiber.Ctx) error {
+	app.Get("/panic", func(c fiber.Ctx) error {
 		// Simulate RequestID middleware having run earlier
 		c.Locals("request_id", "rid-xyz")
 		panic("boom")
 	})
 
 	req := httptest.NewRequest("GET", "/panic", nil)
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}
@@ -79,12 +79,12 @@ func TestRecover_NoPanic_PassesThrough(t *testing.T) {
 	var buf bytes.Buffer
 	app := newAppWithRecover(&buf)
 
-	app.Get("/ok", func(c *fiber.Ctx) error {
+	app.Get("/ok", func(c fiber.Ctx) error {
 		return c.SendString("fine")
 	})
 
 	req := httptest.NewRequest("GET", "/ok", nil)
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}

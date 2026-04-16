@@ -1,14 +1,14 @@
 package mwx
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 
 	"github.com/chi07/go-svc-kit/httpx"
 )
 
 func RequestID() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		id := c.Get("X-Request-ID")
 		if id == "" {
 			id = uuid.NewString()
@@ -17,7 +17,7 @@ func RequestID() fiber.Handler {
 		c.Locals("request_id", id)
 
 		ctx := httpx.ContextWithRequestID(c.Context(), id)
-		c.SetUserContext(ctx)
+		c.SetContext(ctx)
 
 		return c.Next()
 	}

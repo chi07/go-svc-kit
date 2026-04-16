@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 
 	"github.com/chi07/go-svc-kit/serverx"
@@ -20,7 +20,7 @@ func newLogger() zerolog.Logger {
 
 func TestListen_IPv4_OK(t *testing.T) {
 	app := fiber.New()
-	app.Get("/", func(c *fiber.Ctx) error { return c.SendString("ok") })
+	app.Get("/", func(c fiber.Ctx) error { return c.SendString("ok") })
 
 	log := newLogger()
 

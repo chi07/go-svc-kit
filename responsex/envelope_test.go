@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 
 	"github.com/chi07/go-svc-kit/responsex"
 )
@@ -44,7 +44,7 @@ func TestNewErrorEnvelope(t *testing.T) {
 
 func TestFiberWriteJSON_WithPaginator(t *testing.T) {
 	app := fiber.New()
-	app.Get("/ok", func(c *fiber.Ctx) error {
+	app.Get("/ok", func(c fiber.Ctx) error {
 		p := &responsex.Paginator{
 			Limit: 10, Offset: 20, Total: 77, TotalPages: 8, CurrentPage: 3, HasNext: true, HasPrevious: true,
 		}
@@ -52,7 +52,7 @@ func TestFiberWriteJSON_WithPaginator(t *testing.T) {
 	})
 
 	req := httptest.NewRequest("GET", "/ok", nil)
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)
 	}
@@ -87,11 +87,11 @@ func TestFiberWriteJSON_WithPaginator(t *testing.T) {
 
 func TestFiberWriteJSON_WithoutPaginator_OmitsPaginatorField(t *testing.T) {
 	app := fiber.New()
-	app.Get("/nop", func(c *fiber.Ctx) error {
+	app.Get("/nop", func(c fiber.Ctx) error {
 		return responsex.FiberWriteJSON(c, 201, []int{1, 2}, nil)
 	})
 	req := httptest.NewRequest("GET", "/nop", nil)
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)
 	}
@@ -112,11 +112,11 @@ func TestFiberWriteJSON_WithoutPaginator_OmitsPaginatorField(t *testing.T) {
 
 func TestFiberWriteError(t *testing.T) {
 	app := fiber.New()
-	app.Get("/err", func(c *fiber.Ctx) error {
+	app.Get("/err", func(c fiber.Ctx) error {
 		return responsex.FiberWriteError(c, 400, map[string]any{"code": "BAD", "msg": "bad request"})
 	})
 	req := httptest.NewRequest("GET", "/err", nil)
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)
 	}

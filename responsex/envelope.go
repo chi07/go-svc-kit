@@ -1,7 +1,7 @@
 package responsex
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type DataEnvelope[T any] struct {
@@ -32,10 +32,10 @@ func NewPaginator(page, limit, total int64) *Paginator {
 	return &Paginator{CurrentPage: page, Limit: limit, Total: total}
 }
 
-func FiberWriteJSON[T any](c *fiber.Ctx, status int, data []T, p *Paginator) error {
+func FiberWriteJSON[T any](c fiber.Ctx, status int, data []T, p *Paginator) error {
 	return c.Status(status).JSON(NewEnvelope(data, p))
 }
 
-func FiberWriteError(c *fiber.Ctx, status int, err any) error {
+func FiberWriteError(c fiber.Ctx, status int, err any) error {
 	return c.Status(status).JSON(NewErrorEnvelope(err))
 }

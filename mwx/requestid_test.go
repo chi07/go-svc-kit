@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 
 	"github.com/chi07/go-svc-kit/httpx"
@@ -15,9 +15,9 @@ import (
 func newApp() *fiber.App {
 	app := fiber.New()
 	app.Use(mwx.RequestID())
-	app.Get("/check", func(c *fiber.Ctx) error {
+	app.Get("/check", func(c fiber.Ctx) error {
 		loc, _ := c.Locals("request_id").(string)
-		ctxRID := httpx.RequestIDFromContext(c.UserContext())
+		ctxRID := httpx.RequestIDFromContext(c.Context())
 		return c.JSON(map[string]string{
 			"header": c.GetRespHeader("X-Request-ID"),
 			"locals": loc,
@@ -32,7 +32,7 @@ func TestRequestID_GeneratesWhenMissing(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/check", nil)
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestRequestID_UsesProvidedHeader(t *testing.T) {
 	req := httptest.NewRequest("GET", "/check", nil)
 	req.Header.Set("X-Request-ID", given)
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}

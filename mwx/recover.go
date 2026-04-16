@@ -3,12 +3,12 @@ package mwx
 import (
 	"runtime/debug"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 )
 
 func Recover(log zerolog.Logger) fiber.Handler {
-	return func(c *fiber.Ctx) (err error) {
+	return func(c fiber.Ctx) (err error) {
 		defer func() {
 			if r := recover(); r != nil {
 				reqID, _ := c.Locals("request_id").(string)

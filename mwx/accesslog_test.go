@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/chi07/go-svc-kit/mwx"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 )
 
@@ -22,13 +22,13 @@ func TestAccessLogger_InfoOn2xx(t *testing.T) {
 	var buf bytes.Buffer
 	app, _ := newAppWithLogger(&buf)
 
-	app.Get("/ok", func(c *fiber.Ctx) error {
+	app.Get("/ok", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-200")
 		return c.SendString("hello")
 	})
 
 	req := httptest.NewRequest("GET", "/ok", nil)
-	_, err := app.Test(req, -1)
+	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}
@@ -57,7 +57,7 @@ func TestAccessLogger_WarnOn4xx_IncludesError(t *testing.T) {
 	var buf bytes.Buffer
 	app, _ := newAppWithLogger(&buf)
 
-	app.Get("/bad", func(c *fiber.Ctx) error {
+	app.Get("/bad", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-400")
 		// Explicitly set 400 so middleware sees it
 		_ = c.SendStatus(400)
@@ -65,7 +65,7 @@ func TestAccessLogger_WarnOn4xx_IncludesError(t *testing.T) {
 	})
 
 	req := httptest.NewRequest("GET", "/bad", nil)
-	_, err := app.Test(req, -1)
+	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}
@@ -90,7 +90,7 @@ func TestAccessLogger_ErrorOn5xx_IncludesError(t *testing.T) {
 	var buf bytes.Buffer
 	app, _ := newAppWithLogger(&buf)
 
-	app.Get("/boom", func(c *fiber.Ctx) error {
+	app.Get("/boom", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-500")
 		// Explicitly set 500 so middleware sees it
 		_ = c.SendStatus(500)
@@ -98,7 +98,7 @@ func TestAccessLogger_ErrorOn5xx_IncludesError(t *testing.T) {
 	})
 
 	req := httptest.NewRequest("GET", "/boom", nil)
-	_, err := app.Test(req, -1)
+	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
 	}
