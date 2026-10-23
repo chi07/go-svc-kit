@@ -12,16 +12,16 @@ import (
 )
 
 // helper tạo exec func dùng chính *resty.Request truyền vào
-func makeExec(url string, status int, body string) (func(*resty.Request) (*resty.Response, error), func()) {
+func makeExec(status int, body string) (exec func(*resty.Request) (*resty.Response, error), cleanup func()) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		_, _ = w.Write([]byte(body))
 	}))
-	exec := func(r *resty.Request) (*resty.Response, error) {
+	exec = func(r *resty.Request) (*resty.Response, error) {
 		// dùng GET cho đơn giản
 		return r.Get(srv.URL)
 	}
-	cleanup := func() { srv.Close() }
+	cleanup = func() { srv.Close() }
 	return exec, cleanup
 }
 
@@ -33,7 +33,7 @@ func TestExecuteAndMapByField_Success_DefaultPath(t *testing.T) {
 	// data có: id=a (2 lần, bản sau overwrite), id=b,
 	// phần tử không hợp lệ: id rỗng, id là số, object thiếu id, số 5
 	json := `{"data":[{"id":"a","v":1},{"id":"b","v":2},{"id":""},{"id":123},{"x":"noid"},5,{"id":"a","v":9}]}`
-	exec, cleanup := makeExec("", http.StatusOK, json)
+	exec, cleanup := makeExec(http.StatusOK, json)
 	defer cleanup()
 
 	got, err := httpx.ExecuteAndMapByField(newReq(), exec, "id")
@@ -54,7 +54,7 @@ func TestExecuteAndMapByField_Success_DefaultPath(t *testing.T) {
 
 func TestExecuteAndMapByFieldAt_Success_NestedPath(t *testing.T) {
 	json := `{"payload":{"items":[{"slug":"x","n":1},{"slug":"y","n":2}]}}`
-	exec, cleanup := makeExec("", http.StatusOK, json)
+	exec, cleanup := makeExec(http.StatusOK, json)
 	defer cleanup()
 
 	got, err := httpx.ExecuteAndMapByFieldAt(newReq(), exec, []string{"payload", "items"}, "slug")
@@ -74,7 +74,7 @@ func TestExecuteAndMapByFieldAt_Success_NestedPath(t *testing.T) {
 }
 
 func TestExecuteAndMapByField_HTTPError(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusInternalServerError, `{"error":"boom"}`)
+	exec, cleanup := makeExec(http.StatusInternalServerError, `{"error":"boom"}`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByField(newReq(), exec, "id")
@@ -84,7 +84,7 @@ func TestExecuteAndMapByField_HTTPError(t *testing.T) {
 }
 
 func TestExecuteAndMapByField_InvalidJSON(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusOK, `{"data":[{]}`)
+	exec, cleanup := makeExec(http.StatusOK, `{"data":[{]}`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByField(newReq(), exec, "id")
@@ -94,7 +94,7 @@ func TestExecuteAndMapByField_InvalidJSON(t *testing.T) {
 }
 
 func TestExecuteAndMapByFieldAt_PathSegmentNotObject(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusOK, `{"data":[1,2,3]}`)
+	exec, cleanup := makeExec(http.StatusOK, `{"data":[1,2,3]}`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByFieldAt(newReq(), exec, []string{"data", "items"}, "id")
@@ -105,7 +105,7 @@ func TestExecuteAndMapByFieldAt_PathSegmentNotObject(t *testing.T) {
 }
 
 func TestExecuteAndMapByFieldAt_FirstSegmentNotObject(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusOK, `[{"data":1}]`)
+	exec, cleanup := makeExec(http.StatusOK, `[{"data":1}]`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByFieldAt(newReq(), exec, []string{"data"}, "id")
@@ -116,7 +116,7 @@ func TestExecuteAndMapByFieldAt_FirstSegmentNotObject(t *testing.T) {
 }
 
 func TestExecuteAndMapByFieldAt_PathSegmentNotFound(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusOK, `{"data":{"other":[]}}`)
+	exec, cleanup := makeExec(http.StatusOK, `{"data":{"other":[]}}`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByFieldAt(newReq(), exec, []string{"data", "items"}, "id")
@@ -126,7 +126,7 @@ func TestExecuteAndMapByFieldAt_PathSegmentNotFound(t *testing.T) {
 }
 
 func TestExecuteAndMapByFieldAt_TargetNotArray(t *testing.T) {
-	exec, cleanup := makeExec("", http.StatusOK, `{"data":{"items":{}}}`)
+	exec, cleanup := makeExec(http.StatusOK, `{"data":{"items":{}}}`)
 	defer cleanup()
 
 	_, err := httpx.ExecuteAndMapByFieldAt(newReq(), exec, []string{"data", "items"}, "id")
@@ -137,7 +137,7 @@ func TestExecuteAndMapByFieldAt_TargetNotArray(t *testing.T) {
 
 func TestExecuteAndMapByField_SkipsNonObjectsOrMissingID(t *testing.T) {
 	json := `{"data":[5, {"noid":1}, {"id":""}, {"id":123}, {"id":"ok","v":1}]}`
-	exec, cleanup := makeExec("", http.StatusOK, json)
+	exec, cleanup := makeExec(http.StatusOK, json)
 	defer cleanup()
 
 	got, err := httpx.ExecuteAndMapByField(newReq(), exec, "id")

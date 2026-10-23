@@ -50,7 +50,7 @@ func TestNew_DevUsesConsoleWriter(t *testing.T) {
 		t.Fatalf("expected message printed, got %q", out)
 	}
 
-	if !(strings.Contains(out, "INF") || strings.Contains(strings.ToLower(out), "info") || strings.Contains(out, "level=")) {
+	if !strings.Contains(out, "INF") && !strings.Contains(strings.ToLower(out), "info") && !strings.Contains(out, "level=") {
 		t.Fatalf("expected console-style hint (INF/info/level=), got %q", out)
 	}
 }
@@ -96,7 +96,7 @@ func TestNew_TimestampPresent(t *testing.T) {
 		time.Sleep(1 * time.Millisecond)
 		logger.Info().Msg("ts check")
 	})
-	if !(strings.Contains(out, "\"time\"") || strings.Contains(out, "202") || strings.Contains(out, "level")) {
+	if !strings.Contains(out, "\"time\"") && !strings.Contains(out, "202") && !strings.Contains(out, "level") {
 		t.Fatalf("expected timestamp-ish output, got %q", out)
 	}
 }

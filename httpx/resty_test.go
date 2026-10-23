@@ -104,6 +104,7 @@ func TestNewBaseResty_NoRetryOn4xx(t *testing.T) {
 
 	resp, err := c.R().Get(s.URL)
 	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
 	}
 	if resp.Request.Attempt != 1 {
 		t.Fatalf("expected no retry on 4xx, Attempt=1, got %d", resp.Request.Attempt)
@@ -127,8 +128,7 @@ func TestNewBaseResty_NoRetryOnContextCanceled(t *testing.T) {
 		t.Fatalf("expected context canceled error")
 	}
 
-	if !strings.Contains(err.Error(), "context canceled") &&
-		!strings.Contains(err.Error(), "context canceled") { // keep simple
+	if !strings.Contains(err.Error(), "context canceled") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }

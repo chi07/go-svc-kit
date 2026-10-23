@@ -3,6 +3,7 @@ package mwx_test
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -30,7 +31,7 @@ func TestRecover_PanickingHandler_Returns500AndLogs(t *testing.T) {
 		panic("boom")
 	})
 
-	req := httptest.NewRequest("GET", "/panic", nil)
+	req := httptest.NewRequest("GET", "/panic", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
@@ -83,7 +84,7 @@ func TestRecover_NoPanic_PassesThrough(t *testing.T) {
 		return c.SendString("fine")
 	})
 
-	req := httptest.NewRequest("GET", "/ok", nil)
+	req := httptest.NewRequest("GET", "/ok", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)

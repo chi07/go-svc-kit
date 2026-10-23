@@ -2,6 +2,7 @@ package responsex_test
 
 import (
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -51,7 +52,7 @@ func TestFiberWriteJSON_WithPaginator(t *testing.T) {
 		return responsex.FiberWriteJSON(c, 200, []string{"a", "b"}, p)
 	})
 
-	req := httptest.NewRequest("GET", "/ok", nil)
+	req := httptest.NewRequest("GET", "/ok", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)
@@ -90,7 +91,7 @@ func TestFiberWriteJSON_WithoutPaginator_OmitsPaginatorField(t *testing.T) {
 	app.Get("/nop", func(c fiber.Ctx) error {
 		return responsex.FiberWriteJSON(c, 201, []int{1, 2}, nil)
 	})
-	req := httptest.NewRequest("GET", "/nop", nil)
+	req := httptest.NewRequest("GET", "/nop", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)
@@ -115,7 +116,7 @@ func TestFiberWriteError(t *testing.T) {
 	app.Get("/err", func(c fiber.Ctx) error {
 		return responsex.FiberWriteError(c, 400, map[string]any{"code": "BAD", "msg": "bad request"})
 	})
-	req := httptest.NewRequest("GET", "/err", nil)
+	req := httptest.NewRequest("GET", "/err", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("fiber app.Test error: %v", err)

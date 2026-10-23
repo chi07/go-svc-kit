@@ -140,7 +140,6 @@ func TestOptionsFromDSN_SupportedSchemesAndBasics(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := dbx.OptionsFromDSN(tc.dsn, tc.pool, tc.sslInsecure)
 			if tc.wantErr {
@@ -192,7 +191,7 @@ func TestOptionsFromDSN_DefaultsAndPoolSize(t *testing.T) {
 
 func TestApplySetMap_NoPanicAndReturnsQuery(t *testing.T) {
 	db := pg.Connect(&pg.Options{}) // creating a DB handle does not connect until a query is executed
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	q := db.Model((*struct{})(nil))
 	fields := map[string]any{"col1": 1, "col2": "x", "col3": true}

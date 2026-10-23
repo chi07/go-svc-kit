@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/v2/slicex"
+	slice "github.com/chi07/go-svc-kit/v2/slicex"
 )
 
 func TestUniqueStrings(t *testing.T) {
@@ -58,7 +58,6 @@ func TestUniqueStrings(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			got := slice.UniqueStrings(tc.in)
 
@@ -122,7 +121,6 @@ func TestContainsStr(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			got := slice.ContainsStr(tc.ss, tc.want)
 			if got != tc.out {

@@ -68,8 +68,8 @@ func OptionsFromDSN(dsn string, poolSize int, sslInsecure bool) (*pg.Options, er
 	}, nil
 }
 
-func splitHostPort(h string) (string, string, error) {
-	host, port, err := net.SplitHostPort(h)
+func splitHostPort(h string) (host, port string, err error) {
+	host, port, err = net.SplitHostPort(h)
 	if err == nil {
 		return host, port, nil
 	}

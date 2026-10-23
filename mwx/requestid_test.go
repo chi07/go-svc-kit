@@ -2,6 +2,7 @@ package mwx_test
 
 import (
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -30,7 +31,7 @@ func newApp() *fiber.App {
 func TestRequestID_GeneratesWhenMissing(t *testing.T) {
 	app := newApp()
 
-	req := httptest.NewRequest("GET", "/check", nil)
+	req := httptest.NewRequest("GET", "/check", http.NoBody)
 
 	resp, err := app.Test(req)
 	if err != nil {
@@ -53,7 +54,7 @@ func TestRequestID_GeneratesWhenMissing(t *testing.T) {
 		t.Fatalf("generated X-Request-ID is not a valid UUID: %q (%v)", rh, err)
 	}
 
-	if !(rh == rl && rl == rc) {
+	if rh != rl || rl != rc {
 		t.Fatalf("request id mismatch: header=%q locals=%q ctx=%q", rh, rl, rc)
 	}
 }
@@ -62,7 +63,7 @@ func TestRequestID_UsesProvidedHeader(t *testing.T) {
 	app := newApp()
 
 	const given = "req-12345-fixed"
-	req := httptest.NewRequest("GET", "/check", nil)
+	req := httptest.NewRequest("GET", "/check", http.NoBody)
 	req.Header.Set("X-Request-ID", given)
 
 	resp, err := app.Test(req)

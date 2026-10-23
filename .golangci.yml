@@ -1,65 +1,76 @@
+version: "2"
 run:
-  timeout: 4m
   tests: true
   allow-parallel-runners: true
-
 output:
-  sort-results: true
   formats:
-    - format: colored-line-number
-
+    text:
+      path: stdout
 linters:
   enable:
-    - govet
-    - staticcheck
-    - gosimple
-    - ineffassign
-    - typecheck
-    - errcheck
-    - gocritic
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - dupl
+    - exhaustive
     - goconst
-    - prealloc
-    - gofumpt
-    - goimports
+    - gocritic
     - misspell
-    - revive
     - nakedret
+    - prealloc
+    - revive
+    - sqlclosecheck
+    - staticcheck
     - unconvert
     - unparam
-    - tenv
-    - copyloopvar
-    - sqlclosecheck
-    - bodyclose
     - whitespace
-    - dupl
-    - stylecheck
-    - dogsled
-    - exportloopref
-    - exhaustive
-
-linters-settings:
-  gofumpt:
-    extra-rules: true
-  goimports:
-    local-prefixes: github.com/yourname/your-app
-  revive:
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+      disabled-checks:
+        - hugeParam
+    misspell:
+      locale: US
+    revive:
+      rules:
+        - name: indent-error-flow
+        - name: errorf
+        - name: error-naming
+        - name: exported
+        - name: if-return
+  exclusions:
+    generated: lax
     rules:
-      - name: indent-error-flow
-      - name: errorf
-      - name: error-naming
-      - name: exported
-      - name: if-return
-  gocritic:
-    enabled-tags: [diagnostic, performance, style]
-    settings:
-      hugeParam:
-        sizeThreshold: 96
-  misspell:
-    locale: US
-
+      - path: (.+)\.go$
+        text: should have comment or be unexported
+      - path: _test\.go$
+        linters:
+          - goconst
+          - bodyclose
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
 issues:
-  exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude:
-    - 'should have comment or be unexported' # relax for internal code
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra:
+        group-params: true
+    goimports:
+      local-prefixes:
+        - github.com/chi07/go-svc-kit/v2
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

@@ -3,6 +3,7 @@ package mwx_test
 import (
 	"bytes"
 	"io"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestCORS_SpecificOrigins_EchoesMatchingOrigin(t *testing.T) {
 	app.Get("/x", func(c fiber.Ctx) error { return c.SendString("ok") })
 
 	// Matching origin
-	req := httptest.NewRequest("GET", "/x", nil)
+	req := httptest.NewRequest("GET", "/x", http.NoBody)
 	req.Header.Set("Origin", "https://a.com")
 	resp, err := app.Test(req)
 	if err != nil {
@@ -28,7 +29,7 @@ func TestCORS_SpecificOrigins_EchoesMatchingOrigin(t *testing.T) {
 	}
 
 	// Non-matching origin should result in no ACAO
-	req2 := httptest.NewRequest("GET", "/x", nil)
+	req2 := httptest.NewRequest("GET", "/x", http.NoBody)
 	req2.Header.Set("Origin", "https://c.com")
 	resp2, err := app.Test(req2)
 	if err != nil {
@@ -51,7 +52,7 @@ func TestGzip_CompressesWhenAccepted(t *testing.T) {
 	})
 
 	// With gzip accepted
-	req := httptest.NewRequest("GET", "/big", nil)
+	req := httptest.NewRequest("GET", "/big", http.NoBody)
 	req.Header.Set("Accept-Encoding", "gzip")
 	resp, err := app.Test(req)
 	if err != nil {
@@ -66,7 +67,7 @@ func TestGzip_CompressesWhenAccepted(t *testing.T) {
 	}
 
 	// Without gzip accepted -> no compression
-	req2 := httptest.NewRequest("GET", "/big", nil)
+	req2 := httptest.NewRequest("GET", "/big", http.NoBody)
 	resp2, err := app.Test(req2)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)

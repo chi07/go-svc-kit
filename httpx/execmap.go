@@ -13,7 +13,6 @@ func ExecuteAndMapByFieldAt(
 	arrayPath []string,
 	idField string,
 ) (map[string]map[string]any, error) {
-
 	resp, err := exec(req)
 	if err != nil {
 		return nil, err

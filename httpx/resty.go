@@ -24,6 +24,7 @@ func ContextWithRequestID(ctx context.Context, reqID string) context.Context {
 	}
 	return context.WithValue(ctx, ctxKeyRequestID, reqID)
 }
+
 func RequestIDFromContext(ctx context.Context) string {
 	if v := ctx.Value(ctxKeyRequestID); v != nil {
 		if s, ok := v.(string); ok {

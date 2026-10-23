@@ -431,9 +431,6 @@ func TestApplyExactFilters(t *testing.T) {
 			ApplyExactFilters(q, tt.extras, aliasMap)
 			// Without a real DB connection, we can't verify the actual WHERE clause
 			// but we can ensure the function doesn't panic
-			if q == nil {
-				t.Error("ApplyExactFilters() should not modify query to nil")
-			}
 		})
 	}
 }
@@ -709,9 +706,6 @@ func TestApplyExactFilters_WhitespaceAndCaseHandling(t *testing.T) {
 
 	ApplyExactFilters(q, extras, aliasMap)
 	// Function should handle case-insensitive and whitespace properly
-	if q == nil {
-		t.Error("ApplyExactFilters() should not modify query to nil")
-	}
 }
 
 // Test with generics - using simple struct types

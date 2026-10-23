@@ -19,7 +19,7 @@ func CORS(originsCSV string) fiber.Handler {
 		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "X-API-Key"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Encoding", "ETag"},
-		AllowCredentials: !(len(origins) == 1 && origins[0] == "*"),
+		AllowCredentials: len(origins) != 1 || origins[0] != "*",
 		MaxAge:           int((12 * time.Hour).Seconds()),
 	})
 }

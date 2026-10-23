@@ -2,32 +2,34 @@ package mwx_test
 
 import (
 	"bytes"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/v2/mwx"
 	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
+
+	"github.com/chi07/go-svc-kit/v2/mwx"
 )
 
-func newAppWithLogger(buf *bytes.Buffer) (*fiber.App, zerolog.Logger) {
+func newAppWithLogger(buf *bytes.Buffer) *fiber.App {
 	log := zerolog.New(buf).With().Timestamp().Logger()
 	app := fiber.New()
 	app.Use(mwx.AccessLogger(log))
-	return app, log
+	return app
 }
 
 func TestAccessLogger_InfoOn2xx(t *testing.T) {
 	var buf bytes.Buffer
-	app, _ := newAppWithLogger(&buf)
+	app := newAppWithLogger(&buf)
 
 	app.Get("/ok", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-200")
 		return c.SendString("hello")
 	})
 
-	req := httptest.NewRequest("GET", "/ok", nil)
+	req := httptest.NewRequest("GET", "/ok", http.NoBody)
 	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
@@ -55,7 +57,7 @@ func TestAccessLogger_InfoOn2xx(t *testing.T) {
 
 func TestAccessLogger_WarnOn4xx_IncludesError(t *testing.T) {
 	var buf bytes.Buffer
-	app, _ := newAppWithLogger(&buf)
+	app := newAppWithLogger(&buf)
 
 	app.Get("/bad", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-400")
@@ -64,7 +66,7 @@ func TestAccessLogger_WarnOn4xx_IncludesError(t *testing.T) {
 		return fiber.ErrBadRequest
 	})
 
-	req := httptest.NewRequest("GET", "/bad", nil)
+	req := httptest.NewRequest("GET", "/bad", http.NoBody)
 	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)
@@ -88,7 +90,7 @@ func TestAccessLogger_WarnOn4xx_IncludesError(t *testing.T) {
 
 func TestAccessLogger_ErrorOn5xx_IncludesError(t *testing.T) {
 	var buf bytes.Buffer
-	app, _ := newAppWithLogger(&buf)
+	app := newAppWithLogger(&buf)
 
 	app.Get("/boom", func(c fiber.Ctx) error {
 		c.Locals("request_id", "rid-500")
@@ -97,7 +99,7 @@ func TestAccessLogger_ErrorOn5xx_IncludesError(t *testing.T) {
 		return fiber.ErrInternalServerError
 	})
 
-	req := httptest.NewRequest("GET", "/boom", nil)
+	req := httptest.NewRequest("GET", "/boom", http.NoBody)
 	_, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("app.Test error: %v", err)

@@ -6,10 +6,13 @@ import (
 	"github.com/chi07/go-svc-kit/v2/responsex"
 )
 
+// Pagination bounds.
 const (
+	// DefaultLimit is applied when callers pass a non-positive limit.
 	DefaultLimit int64 = 10
-	MinLimit     int64 = 1
-	MaxLimit     int64 = 200
+	// MinLimit is the smallest accepted positive limit.
+	MinLimit int64 = 1
+	MaxLimit int64 = 200
 )
 
 func clampNonNeg(x int64) int64 {
@@ -54,7 +57,7 @@ func PageToOffset(page, limit int64) int64 {
 	return (page - 1) * limit
 }
 
-func Normalize(limit, offset int64) (int64, int64) {
+func Normalize(limit, offset int64) (clampedLimit, clampedOffset int64) {
 	return clampNonNeg(limit), clampNonNeg(offset)
 }
 

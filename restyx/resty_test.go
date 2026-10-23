@@ -15,15 +15,15 @@ import (
 func newReq() *resty.Request { return resty.New().R() }
 
 // helper to build an ExecFunc backed by an httptest.Server
-func makeExec(status int, body string) (restyx.ExecFunc, func()) {
+func makeExec(status int, body string) (exec restyx.ExecFunc, cleanup func()) {
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		_, _ = w.Write([]byte(body))
 	}))
-	exec := func(r *resty.Request) (*resty.Response, error) {
+	exec = func(r *resty.Request) (*resty.Response, error) {
 		return r.Get(s.URL)
 	}
-	cleanup := func() { s.Close() }
+	cleanup = func() { s.Close() }
 	return exec, cleanup
 }
 

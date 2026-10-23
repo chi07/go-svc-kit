@@ -123,7 +123,6 @@ func TestParse(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			got := sortx.Parse(tc.raw)
 			if !reflect.DeepEqual(got, tc.want) {
