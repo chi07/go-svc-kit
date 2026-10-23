@@ -11,7 +11,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/chi07/go-svc-kit/httpx"
+	"github.com/chi07/go-svc-kit/v2/httpx"
 )
 
 func TestContextRequestID(t *testing.T) {

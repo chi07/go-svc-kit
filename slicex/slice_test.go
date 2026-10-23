@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/slicex"
+	"github.com/chi07/go-svc-kit/v2/slicex"
 )
 
 func TestUniqueStrings(t *testing.T) {

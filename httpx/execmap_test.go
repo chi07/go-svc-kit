@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-resty/resty/v2"
 
-	"github.com/chi07/go-svc-kit/httpx"
+	"github.com/chi07/go-svc-kit/v2/httpx"
 )
 
 // helper tạo exec func dùng chính *resty.Request truyền vào

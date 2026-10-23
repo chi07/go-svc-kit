@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 
-	"github.com/chi07/go-svc-kit/httpx"
+	"github.com/chi07/go-svc-kit/v2/httpx"
 )
 
 func RequestID() fiber.Handler {

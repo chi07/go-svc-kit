@@ -1,7 +1,6 @@
 package parsex
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -59,7 +58,7 @@ func ParseSort(sort string, allowed map[string]struct{}, def string) []string {
 			col = p[1:]
 		}
 		if _, ok := allowed[col]; ok {
-			out = append(out, fmt.Sprintf("%s %s", col, dir))
+			out = append(out, col+" "+dir)
 		}
 	}
 	if len(out) == 0 {

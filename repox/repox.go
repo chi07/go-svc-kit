@@ -8,12 +8,19 @@ import (
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
 
-	"github.com/chi07/go-svc-kit/fieldx"
+	"github.com/chi07/go-svc-kit/v2/fieldx"
 )
 
+// IsDuplicateErr reports a unique-constraint violation. It prefers the
+// Postgres SQLSTATE (23505 via pg.Error.Field('C')) and falls back to a
+// message check for non-pg drivers.
 func IsDuplicateErr(err error) bool {
 	if err == nil {
 		return false
+	}
+	var pgErr pg.Error
+	if errors.As(err, &pgErr) {
+		return pgErr.Field('C') == "23505"
 	}
 	msg := strings.ToLower(err.Error())
 	return strings.Contains(msg, "duplicate key") || strings.Contains(msg, "unique constraint")

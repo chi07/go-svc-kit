@@ -8,7 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 
-	"github.com/chi07/go-svc-kit/responsex"
+	"github.com/chi07/go-svc-kit/v2/responsex"
 )
 
 func TestNewEnvelopeAndPaginator(t *testing.T) {

@@ -1,4 +1,4 @@
-module github.com/chi07/go-svc-kit
+module github.com/chi07/go-svc-kit/v2
 
 go 1.25.1
 

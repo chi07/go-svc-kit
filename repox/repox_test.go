@@ -288,40 +288,40 @@ func TestBuildOrderExpr(t *testing.T) {
 	}
 
 	tests := []struct {
-		name        string
-		items       []orderItem
-		fieldFn     func(orderItem) string
-		descFn      func(orderItem) bool
-		aliasMap    map[string]string
-		defaults    []string
-		expected    []string
+		name     string
+		items    []orderItem
+		fieldFn  func(orderItem) string
+		descFn   func(orderItem) bool
+		aliasMap map[string]string
+		defaults []string
+		expected []string
 	}{
 		{
-			name:        "empty items with defaults",
-			items:       []orderItem{},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{"id ASC"},
-			expected:    []string{"id ASC"},
+			name:     "empty items with defaults",
+			items:    []orderItem{},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{"id ASC"},
+			expected: []string{"id ASC"},
 		},
 		{
-			name:        "single ascending order",
-			items:       []orderItem{{field: "name", desc: false}},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{"id ASC"},
-			expected:    []string{"user_name ASC"},
+			name:     "single ascending order",
+			items:    []orderItem{{field: "name", desc: false}},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{"id ASC"},
+			expected: []string{"user_name ASC"},
 		},
 		{
-			name:        "single descending order",
-			items:       []orderItem{{field: "created_at", desc: true}},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{"id ASC"},
-			expected:    []string{"created_at DESC"},
+			name:     "single descending order",
+			items:    []orderItem{{field: "created_at", desc: true}},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{"id ASC"},
+			expected: []string{"created_at DESC"},
 		},
 		{
 			name: "multiple orders",
@@ -336,31 +336,31 @@ func TestBuildOrderExpr(t *testing.T) {
 			expected: []string{"user_name DESC", "created_at ASC"},
 		},
 		{
-			name:        "invalid alias ignored",
-			items:       []orderItem{{field: "phone", desc: false}},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{"id ASC"},
-			expected:    []string{"id ASC"},
+			name:     "invalid alias ignored",
+			items:    []orderItem{{field: "phone", desc: false}},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{"id ASC"},
+			expected: []string{"id ASC"},
 		},
 		{
-			name:        "all invalid aliases return defaults",
-			items:       []orderItem{{field: "phone"}, {field: "address"}},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{"id ASC"},
-			expected:    []string{"id ASC"},
+			name:     "all invalid aliases return defaults",
+			items:    []orderItem{{field: "phone"}, {field: "address"}},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{"id ASC"},
+			expected: []string{"id ASC"},
 		},
 		{
-			name:        "case insensitive alias matching",
-			items:       []orderItem{{field: "NAME", desc: true}},
-			fieldFn:     func(oi orderItem) string { return oi.field },
-			descFn:      func(oi orderItem) bool { return oi.desc },
-			aliasMap:    aliasMap,
-			defaults:    []string{},
-			expected:    []string{"user_name DESC"},
+			name:     "case insensitive alias matching",
+			items:    []orderItem{{field: "NAME", desc: true}},
+			fieldFn:  func(oi orderItem) string { return oi.field },
+			descFn:   func(oi orderItem) bool { return oi.desc },
+			aliasMap: aliasMap,
+			defaults: []string{},
+			expected: []string{"user_name DESC"},
 		},
 	}
 

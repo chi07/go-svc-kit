@@ -11,7 +11,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/chi07/go-svc-kit/usecasex"
+	"github.com/chi07/go-svc-kit/v2/usecasex"
 )
 
 func newLoggerBuf() (*zerolog.Logger, *bytes.Buffer) {

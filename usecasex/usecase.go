@@ -16,7 +16,6 @@ func EnrichBatch(ctx context.Context, timeout time.Duration, log zerolog.Logger,
 
 	eg := new(errgroup.Group)
 	for name, fn := range tasks {
-		name, fn := name, fn
 		eg.Go(func() error {
 			if err := fn(cctx); err != nil {
 				log.Warn().Str("task", name).Err(err).Msg("enrich_failed")

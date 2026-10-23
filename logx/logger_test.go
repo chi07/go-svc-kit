@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chi07/go-svc-kit/logx"
+	"github.com/chi07/go-svc-kit/v2/logx"
 )
 
 func captureStdout(fn func()) string {

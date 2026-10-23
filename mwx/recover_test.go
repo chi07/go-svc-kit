@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 
-	"github.com/chi07/go-svc-kit/mwx"
+	"github.com/chi07/go-svc-kit/v2/mwx"
 )
 
 func newAppWithRecover(buf *bytes.Buffer) *fiber.App {
@@ -49,7 +49,7 @@ func TestRecover_PanickingHandler_Returns500AndLogs(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected error object in body, got: %#v", body["error"])
 	}
-	if msg, _ := errField["message"].(string); msg != "internal serverx error" {
+	if msg, _ := errField["message"].(string); msg != "internal server error" {
 		t.Fatalf("unexpected error message: %v", errField["message"])
 	}
 	if rid, _ := errField["requestId"].(string); rid != "rid-xyz" {

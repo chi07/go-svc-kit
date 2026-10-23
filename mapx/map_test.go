@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/mapx"
+	"github.com/chi07/go-svc-kit/v2/mapx"
 )
 
 func TestDeepEqualMap_NilVsNil(t *testing.T) {

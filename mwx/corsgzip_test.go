@@ -8,7 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 
-	"github.com/chi07/go-svc-kit/mwx"
+	"github.com/chi07/go-svc-kit/v2/mwx"
 )
 
 func TestCORS_SpecificOrigins_EchoesMatchingOrigin(t *testing.T) {

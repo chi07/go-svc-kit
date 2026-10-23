@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/mwx"
+	"github.com/chi07/go-svc-kit/v2/mwx"
 	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 )

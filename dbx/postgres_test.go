@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-pg/pg/v10"
 
-	"github.com/chi07/go-svc-kit/dbx"
+	"github.com/chi07/go-svc-kit/v2/dbx"
 )
 
 func TestOptionsFromDSN_SupportedSchemesAndBasics(t *testing.T) {

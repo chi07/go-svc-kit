@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/queryx"
+	"github.com/chi07/go-svc-kit/v2/queryx"
 )
 
 func TestSanitizeCols(t *testing.T) {

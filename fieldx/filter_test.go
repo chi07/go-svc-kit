@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/fieldx"
+	"github.com/chi07/go-svc-kit/v2/fieldx"
 )
 
 func TestMakeSet(t *testing.T) {

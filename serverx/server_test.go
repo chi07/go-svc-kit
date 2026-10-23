@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 
-	"github.com/chi07/go-svc-kit/serverx"
+	"github.com/chi07/go-svc-kit/v2/serverx"
 )
 
 func newLogger() zerolog.Logger {

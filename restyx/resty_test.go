@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-resty/resty/v2"
 
-	"github.com/chi07/go-svc-kit/restyx"
+	"github.com/chi07/go-svc-kit/v2/restyx"
 )
 
 func newReq() *resty.Request { return resty.New().R() }

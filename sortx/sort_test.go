@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/sortx"
+	"github.com/chi07/go-svc-kit/v2/sortx"
 )
 
 func TestParse(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/chi07/go-svc-kit/pagex"
-	"github.com/chi07/go-svc-kit/responsex"
+	"github.com/chi07/go-svc-kit/v2/pagex"
+	"github.com/chi07/go-svc-kit/v2/responsex"
 )
 
 func TestClampLimit(t *testing.T) {
