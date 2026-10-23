@@ -33,3 +33,23 @@ logs/
 .docker/
 **/.env
 .env.local
+
+# standard ignores
+*.exe~
+*.dll
+*.so
+*.dylib
+coverage.*
+.env
+*.env
+env.fix
+dev.sh
+local.sh
+dev.local.sh
+go.work
+go.work.sum
+.gocache/
+.gomodcache/
+bin/
+dist/
+build/
